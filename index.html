@@ -16,30 +16,32 @@ html{height:100%;background:#000;scroll-padding-top:env(safe-area-inset-top,0px)
 [hidden]{display:none!important}
 body{margin:0;min-height:100svh;display:grid;place-items:center;padding:12px 8px 96px;color:#fff;
 font-family:Nunito,system-ui,sans-serif;
-background:var(--asset-bg) center/cover no-repeat,#000;
+background:#000;
 height:100svh;overflow:hidden}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.backdrop{position:fixed;inset:0;z-index:0;background:var(--asset-bg) center/cover no-repeat;transform:translate(var(--bg-pan-x,0px),var(--bg-pan-y,0px)) scale(var(--bg-zoom,1));transform-origin:center;transition:transform 1.8s cubic-bezier(.16,1,.3,1);will-change:transform}
 .snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
-.scene{--sh:max(100svh,min(175svh,calc(100vw * 1.25)));position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.scene{--sh:max(100svh,min(175svh,calc(100vw * 1.25)));position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}
 .wordmark{position:absolute;z-index:0;width:clamp(280px,29vw,520px);height:auto;pointer-events:none;filter:drop-shadow(0 5px 5px #0006)}
+.wordmark{scale:var(--mid-zoom,1);translate:var(--mid-pan-x,0px) var(--mid-pan-y,0px);transition:scale 1.8s cubic-bezier(.16,1,.3,1),translate 1.8s cubic-bezier(.16,1,.3,1);will-change:scale,translate}
 .wordmark.fonda{left:clamp(28px,3vw,58px);top:8vh}
 .wordmark.tanne{right:clamp(28px,3vw,58px);top:25vh}
-.stage{position:absolute;left:50%;top:calc(50% - 3vh);transform:translate(-50%,-50%);z-index:1;aspect-ratio:3/4;height:var(--sh)}
+.stage{position:absolute;left:50%;top:calc(50% - 3vh);transform:translate(calc(-50% + var(--fg-pan-x,0px)),calc(-50% + var(--fg-pan-y,0px))) scale(var(--fg-zoom,1));transform-origin:center;transition:transform 1.8s cubic-bezier(.16,1,.3,1);will-change:transform;z-index:1;aspect-ratio:3/4;height:var(--sh)}
 @media(max-width:700px){body{padding:0}.scene{--sh:max(100svh,min(175svh,calc(100vw * 1.25)));position:absolute;inset:0;width:100%;height:100%;overflow:visible}}
-@media(max-aspect-ratio:.85/1){.wordmark{left:50%;right:auto;width:min(58vw,300px)}.wordmark.fonda,.wordmark.tanne{left:50%;right:auto;transform:translateX(-50%)}.wordmark.fonda{top:5vh}.wordmark.tanne{top:calc(5vh + min(58vw,300px)*.34 + 2vh)}}
+@media(max-aspect-ratio:.85/1){.wordmark{left:50%;right:auto;width:min(58vw,300px)}.wordmark.fonda,.wordmark.tanne{left:50%;right:auto;transform:translateX(-50%)}.wordmark.fonda{top:2vh}.wordmark.tanne{left:45%;top:calc(2vh + min(58vw,300px)*.3 + 1vh)}}
 @media(min-aspect-ratio:1.01/1) and (max-width:1300px){.wordmark{width:clamp(240px,36vw,440px)}.wordmark.fonda{left:clamp(18px,4.5vw,54px)}.wordmark.tanne{right:clamp(18px,3.5vw,42px)}}
 @media(min-aspect-ratio:1.01/1) and (max-width:900px){.wordmark{width:40vw}.wordmark.fonda{left:2vw}.wordmark.tanne{right:2vw}}
 #area{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.45;image-rendering:pixelated}
 #tree{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 #orns{position:absolute;inset:0}
-.orn{position:absolute;width:11%;aspect-ratio:1;transform:translate(-50%,-50%);padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 3px 3px #0008);transition:transform .15s}
+.orn{position:absolute;width:5.5%;aspect-ratio:1;transform:translate(-50%,-50%);padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 3px 3px #0008);transition:transform .15s}
 .orn img{width:100%;height:100%;display:block;pointer-events:none}
 .orn:hover,.orn:focus-visible{z-index:5;transform:translate(-50%,-50%) scale(1.25)}
 .orn::after{content:attr(data-label);position:absolute;bottom:105%;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--panel);color:var(--ink);padding:2px 9px;border-radius:99px;font-size:.75rem;font-weight:800;opacity:0;pointer-events:none}
 .orn:hover::after,.orn:focus-visible::after{opacity:1}
 .orn.new{animation:pop .5s backwards cubic-bezier(.3,1.6,.5,1)}
 @keyframes pop{from{scale:0}}
-.orn.placing{width:15%;z-index:9;cursor:grab;touch-action:none;outline:3px dashed var(--gold);outline-offset:4px;border-radius:50%}
+.orn.placing{width:7.5%;z-index:9;cursor:grab;touch-action:none;outline:3px dashed var(--gold);outline-offset:4px;border-radius:50%}
 .orn.placing::after{display:none}
 .bar{position:fixed;inset:auto 0 0 0;z-index:10;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#0e1b33e6);font-weight:800}
 .btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:16px;padding:.65em 1.2em;background:var(--gold) var(--asset-btn) center/100% 100%;color:#1a2238;box-shadow:4px 4px 0 var(--ink);cursor:pointer}
@@ -91,6 +93,7 @@ input[type=text]{width:100%;font:inherit;padding:.5em .7em;border:3px solid var(
 </head>
 <body>
 <h1 class="sr">FONDA-TANNE</h1>
+<div class="backdrop" aria-hidden="true"></div>
 <canvas class="snow" id="snow" aria-hidden="true"></canvas>
 <main class="scene">
   <img class="wordmark fonda" src="fonda schriftzug.png" alt="Fonda">
@@ -379,6 +382,41 @@ function drawSnow(){
 }
 addEventListener('resize',resizeSnow);
 resizeSnow();drawSnow();
+
+/* ============ 8. Desktop-Zoom mit Parallax-Fokus ============ */
+const zoomRoot=document.documentElement;
+let zoom=1,pointerX=innerWidth/2,pointerY=innerHeight/2,zoomFrame=0;
+const desktopZoom=matchMedia('(hover: hover) and (pointer: fine)');
+const overlayOpen=()=>document.querySelector('dialog[open]');
+function renderZoom(){
+  const progress=zoom-1,centerX=innerWidth/2,centerY=innerHeight/2;
+  const set=(name,value)=>zoomRoot.style.setProperty(name,`${value}px`);
+  zoomRoot.style.setProperty('--fg-zoom',zoom);
+  zoomRoot.style.setProperty('--mid-zoom',1+progress*.5);
+  zoomRoot.style.setProperty('--bg-zoom',1+progress*.2);
+  set('--fg-pan-x',(centerX-pointerX)*progress);
+  set('--fg-pan-y',(centerY-pointerY)*progress);
+  set('--mid-pan-x',(centerX-pointerX)*progress*.5);
+  set('--mid-pan-y',(centerY-pointerY)*progress*.5);
+  set('--bg-pan-x',(centerX-pointerX)*progress*.2);
+  set('--bg-pan-y',(centerY-pointerY)*progress*.2);
+}
+function zoomEnabled(){return desktopZoom.matches}
+addEventListener('pointermove',e=>{
+  if(!zoomEnabled()||overlayOpen())return;
+  pointerX=e.clientX;pointerY=e.clientY;
+  if(!zoomFrame)zoomFrame=requestAnimationFrame(()=>{zoomFrame=0;renderZoom()});
+});
+addEventListener('wheel',e=>{
+  if(!zoomEnabled()||overlayOpen())return;
+  if(e.ctrlKey)return;
+  e.preventDefault();
+  zoom=Math.min(1.8,Math.max(1,zoom-e.deltaY*.001));
+  renderZoom();
+},{passive:false});
+addEventListener('resize',renderZoom);
+desktopZoom.addEventListener('change',()=>{if(!zoomEnabled()){zoom=1;renderZoom()}});
+renderZoom();
 
 /* ============ Start ============ */
 $('#tree').onload=()=>buildArea($('#tree'));
