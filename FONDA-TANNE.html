@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FONDA-TANNE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Nunito:wght@600;800&display=swap">
+<style>
+:root{--fir:#1f5c45;--berry:#d6336c;--gold:#f4b942;--panel:#f6f8fc;--ink:#1a2238;
+--asset-bg:none;--asset-station:none;--asset-btn:none;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--panel:#1b2848;--ink:#f6f8fc}}
+:root[data-theme="dark"]{--panel:#1b2848;--ink:#f6f8fc}
+html{height:100%;background:#0e1b33;scroll-padding-top:env(safe-area-inset-top,0px);overflow:hidden}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;min-height:100svh;display:grid;place-items:center;padding:12px 8px 96px;color:#fff;
+font-family:Nunito,system-ui,sans-serif;
+background:var(--asset-bg) center/cover no-repeat,radial-gradient(130% 26% at 50% 108%,#f6f8fc 0 98%,transparent 100%),
+radial-gradient(#fff 1px,transparent 1.5px) 0 0/90px 90px,linear-gradient(#0e1b33,#24407a);
+height:100svh;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.snow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.scene{--sh:max(100svh,min(175svh,calc(100vw * 1.25)));position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.wordmark{position:absolute;z-index:0;width:clamp(280px,29vw,520px);height:auto;pointer-events:none;filter:drop-shadow(0 5px 5px #0006)}
+.wordmark.fonda{left:clamp(28px,3vw,58px);top:8vh}
+.wordmark.tanne{right:clamp(28px,3vw,58px);top:25vh}
+.stage{position:absolute;left:50%;top:calc(50% - 3vh);transform:translate(-50%,-50%);z-index:1;aspect-ratio:3/4;height:var(--sh)}
+@media(max-width:700px){body{padding:0}.scene{--sh:max(100svh,min(175svh,calc(100vw * 1.25)));position:absolute;inset:0;width:100%;height:100%;overflow:visible}}
+@media(max-aspect-ratio:.85/1){.wordmark{left:50%;right:auto;width:min(58vw,300px)}.wordmark.fonda,.wordmark.tanne{left:50%;right:auto;transform:translateX(-50%)}.wordmark.fonda{top:5vh}.wordmark.tanne{top:calc(5vh + min(58vw,300px)*.34 + 2vh)}}
+@media(min-aspect-ratio:1.01/1) and (max-width:1300px){.wordmark{width:clamp(240px,36vw,440px)}.wordmark.fonda{left:clamp(18px,4.5vw,54px)}.wordmark.tanne{right:clamp(18px,3.5vw,42px)}}
+@media(min-aspect-ratio:1.01/1) and (max-width:900px){.wordmark{width:40vw}.wordmark.fonda{left:2vw}.wordmark.tanne{right:2vw}}
+#area{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.45;image-rendering:pixelated}
+#tree{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#orns{position:absolute;inset:0}
+.orn{position:absolute;width:11%;aspect-ratio:1;transform:translate(-50%,-50%);padding:0;border:0;background:none;cursor:pointer;filter:drop-shadow(0 3px 3px #0008);transition:transform .15s}
+.orn img{width:100%;height:100%;display:block;pointer-events:none}
+.orn:hover,.orn:focus-visible{z-index:5;transform:translate(-50%,-50%) scale(1.25)}
+.orn::after{content:attr(data-label);position:absolute;bottom:105%;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--panel);color:var(--ink);padding:2px 9px;border-radius:99px;font-size:.75rem;font-weight:800;opacity:0;pointer-events:none}
+.orn:hover::after,.orn:focus-visible::after{opacity:1}
+.orn.new{animation:pop .5s backwards cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{from{scale:0}}
+.orn.placing{width:15%;z-index:9;cursor:grab;touch-action:none;outline:3px dashed var(--gold);outline-offset:4px;border-radius:50%}
+.orn.placing::after{display:none}
+.bar{position:fixed;inset:auto 0 0 0;z-index:10;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#0e1b33e6);font-weight:800}
+.btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:16px;padding:.65em 1.2em;background:var(--gold) var(--asset-btn) center/100% 100%;color:#1a2238;box-shadow:4px 4px 0 var(--ink);cursor:pointer}
+.btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+.btn.alt{background-color:var(--panel)}
+.btn.go{background-color:var(--berry);color:#fff}
+#open{width:280px;min-width:280px;aspect-ratio:1.92;padding:0;border:0;border-radius:0;background:url("button kugel gestalten.PNG") center/contain no-repeat;box-shadow:none;color:transparent;font-size:0;flex:0 0 auto}
+#open:hover{transform:translateY(-2px)}
+#open:active{transform:translateY(1px);box-shadow:none}
+dialog{width:100%;max-width:min(980px,96vw);max-height:94svh;overflow:auto;padding:0;border:3px solid var(--ink);border-radius:24px;background:var(--panel) var(--asset-station) center/cover;color:var(--ink);box-shadow:8px 8px 0 var(--ink);font-family:Nunito,system-ui,sans-serif}
+dialog#editor{inset:0;width:100vw;max-width:none;height:100svh;max-height:none;margin:0;border:0;border-radius:0}
+#editor{color:#fff}
+#editor h2{color:#fff}
+#editor .btn{color:#fff}
+#editor input[type=text]{background:#1a2238;color:#fff}
+#editor input[type=text]::placeholder{color:#fff;opacity:.8}
+dialog::backdrop{background:#050b18cc}
+h2{margin:0;font:1.6rem "Bagel Fat One",system-ui,sans-serif;color:var(--berry)}
+.ed{display:grid;gap:16px;padding:16px}
+@media(min-width:760px){.ed{grid-template-columns:minmax(0,1fr) 340px}.ed h2{grid-column:1/-1}}
+.cv{position:relative;aspect-ratio:1;width:100%;max-width:480px;margin:auto;border-radius:16px;overflow:hidden;background:transparent}
+.cv canvas{position:absolute;inset:0;width:100%;height:100%}
+#paint{touch-action:none;cursor:crosshair}
+#mask{pointer-events:none}
+fieldset{border:0;padding:0;margin:0 0 12px}
+legend{font:1.05rem "Bagel Fat One",system-ui,sans-serif;margin-bottom:6px;padding:0}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0}
+.chip span{display:block;padding:.3em .8em;border:2px solid var(--ink);border-radius:99px;cursor:pointer;font-weight:800}
+.chip input:checked+span{background:var(--berry);color:#fff;border-color:var(--berry)}
+.chip input:focus-visible+span{outline:3px solid var(--gold)}
+.sw{width:30px;height:30px;border-radius:50%;border:3px solid var(--ink);padding:0;cursor:pointer}
+input[type=color]{width:36px;height:32px;border:0;padding:0;background:none}
+input[type=range]{flex:1;min-width:120px}
+input[type=text]{width:100%;font:inherit;padding:.5em .7em;border:3px solid var(--ink);border-radius:12px;background:#fff;color:#1a2238;margin-bottom:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+#msg{color:var(--berry);font-weight:800;min-height:1.4em;margin:0 0 6px}
+.detail{display:grid;gap:10px;padding:22px;text-align:center;justify-items:center}
+.detail img{width:min(78vw,380px);aspect-ratio:1;filter:drop-shadow(0 8px 10px #0006)}
+.detail h2{font-size:2rem}
+.detail p{margin:0;font-weight:800;font-size:1.1rem}
+@media(prefers-reduced-motion:reduce){.orn,.orn.new{animation:none;transition:none}}
+</style>
+</head>
+<body>
+<h1 class="sr">FONDA-TANNE</h1>
+<canvas class="snow" id="snow" aria-hidden="true"></canvas>
+<main class="scene">
+  <img class="wordmark fonda" src="fonda schriftzug.png" alt="Fonda">
+  <img class="wordmark tanne" src="tanne schriftzug.png" alt="Tanne">
+  <div class="stage" id="stage"><img id="tree" alt="Der Fonda-Tannenbaum"><canvas id="area" width="120" height="160"></canvas><div id="orns"></div></div>
+</main>
+
+<div class="bar" id="bar"><button class="btn go" id="open" aria-label="Kugel gestalten">Kugel gestalten</button></div>
+<div class="bar" id="placebar" hidden><span>Zieh deine Kugel an die richtige Stelle.</span>
+  <button class="btn alt" id="cancel">Abbrechen</button><button class="btn go" id="place">Hier aufhängen</button></div>
+
+<dialog id="editor" aria-labelledby="edt"><div class="ed" id="ed">
+  <h2 id="edt">Gestalte deine Kugel</h2>
+  <div class="cv"><canvas id="base" width="400" height="400"></canvas><canvas id="paint" width="400" height="400"></canvas><canvas id="mask" width="400" height="400"></canvas></div>
+  <div>
+    <fieldset><legend>Form</legend><div class="row">
+      <label class="chip"><input type="radio" name="shape" value="round" checked><span>Kugel</span></label>
+      <label class="chip"><input type="radio" name="shape" value="drop"><span>Tropfen</span></label>
+      <label class="chip"><input type="radio" name="shape" value="star"><span>Stern</span></label>
+      <label class="chip"><input type="radio" name="shape" value="heart"><span>Herz</span></label></div></fieldset>
+    <fieldset><legend>Hintergrund</legend><div class="row" id="bgsw"><input type="color" id="bgc" value="#d6336c" aria-label="Eigene Hintergrundfarbe">
+      <label class="btn alt" style="padding:.3em .8em">Foto<input type="file" id="photo" accept="image/*" hidden></label></div></fieldset>
+    <fieldset><legend>Pinsel</legend><div class="row">
+      <label class="chip"><input type="radio" name="tool" value="round" checked><span>Rund</span></label>
+      <label class="chip"><input type="radio" name="tool" value="felt"><span>Filz</span></label>
+      <label class="chip"><input type="radio" name="tool" value="glitter"><span>Glitzer</span></label>
+      <label class="chip"><input type="radio" name="tool" value="erase"><span>Radierer</span></label></div>
+      <div class="row" style="margin-top:8px"><input type="range" name="size" min="4" max="48" value="16" aria-label="Pinselgröße"></div>
+      <div class="row" id="brsw" style="margin-top:8px"><input type="color" id="brc" value="#f4b942" aria-label="Eigene Pinselfarbe"></div></fieldset>
+    <input type="text" id="nm" placeholder="Dein Name" maxlength="40" autocomplete="name">
+    <input type="text" id="co" placeholder="Deine Firma (optional)" maxlength="40" autocomplete="organization">
+    <p id="msg" aria-live="polite"></p>
+    <div class="actions"><button class="btn alt" id="clear">Leeren</button><button class="btn alt" id="cancelEd">Abbrechen</button><button class="btn go" id="done">Fertig</button></div>
+  </div>
+</div></dialog>
+
+<dialog id="detail" aria-label="Kugel im Detail"><div class="detail">
+  <img id="dimg" alt=""><h2 id="dname"></h2><p id="dco"></p>
+  <div class="actions"><button class="btn alt" id="move" hidden>Neu platzieren</button><button class="btn alt" id="delete" hidden>Kugel löschen</button><button class="btn go" id="close">Schließen</button></div>
+</div></dialog>
+
+<script>
+/* ============ 1. ASSETS: hier später eigene Grafiken eintragen (URL oder null = Placeholder) ============ */
+function placeholderTree(){
+  const s=`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800"><rect x="265" y="690" width="70" height="90" fill="#7a4a2b"/>
+  <g fill="#1f6b4f" stroke="#ff2bd6" stroke-width="5" stroke-dasharray="14 10" stroke-linejoin="round">
+  <path d="M300 340 L560 700 H40Z"/><path d="M300 200 L500 460 H100Z"/><path d="M300 70 L450 280 H150Z"/></g>
+  <path d="M300 20l14 30 32 4-24 22 7 32-29-17-29 17 7-32-24-22 32-4z" fill="#f4b942"/>
+  <g fill="#fff" font-family="sans-serif" font-weight="700" text-anchor="middle"><text x="300" y="560" font-size="36">PLATZHALTER</text><text x="300" y="600" font-size="26">Tannenbaum (3:4)</text></g></svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(s);
+}
+const ASSETS={
+  hangArea:'auto',        // 'auto' = aus Transparenz des Baum-PNG, {x0,y0,x1,y1} = Rechteck (0–1), 'free' = überall
+  showHangArea:false,     // true = Hängebereich magenta einblenden (zum Einstellen)
+  alphaMin:40,            // ab welcher Deckkraft (0–255) ein Pixel zum Baum zählt
+  hangInset:3,            // Abstand zum Baumrand in Rasterzellen (1 Zelle = 1/120 der Breite)
+  tree:'Tree.PNG',         // eigenes Baumbild (transparent, Format 3:4)
+  background:'BG Tree.png', // Hintergrundbild/Landschaft
+  station:'BG Werkbank.PNG', // Hintergrund des Bastel-Overlays
+  button:null             // Grafik für Buttons
+};
+const css=u=>u?`url("${u}")`:'none', root=document.documentElement.style;
+root.setProperty('--asset-bg',css(ASSETS.background));
+root.setProperty('--asset-station',css(ASSETS.station));
+root.setProperty('--asset-btn',css(ASSETS.button));
+
+/* ============ 2. API-Adapter: Mock via localStorage. Später durch fetch() auf ein Cloudflare Worker ersetzen ============
+   GET   /api/ornaments        -> Liste (id, name, company, image-URL, x, y)   [D1 + Bilder in R2]
+   POST  /api/ornaments        -> neue Kugel anlegen, liefert id + ownerToken
+   PATCH /api/ornaments/:id    -> Position ändern (nur mit passendem ownerToken)                      */
+const KEY='fonda-tanne.v1',OWN='fonda-tanne.owner';
+const store={
+  read(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch{return[]}},
+  write(v){try{localStorage.setItem(KEY,JSON.stringify(v))}catch(e){console.warn('Speicher voll',e)}}
+};
+const me=(()=>{try{let v=localStorage.getItem(OWN);if(!v){v=crypto.randomUUID();localStorage.setItem(OWN,v)}return v}catch{return'anon'}})();
+const api={
+  async list(){return[...SEED,...store.read()]},
+  async create(o){const n={...o,id:crypto.randomUUID(),owner:me,createdAt:Date.now()};store.write([...store.read(),n]);return n},
+  async move(id,x,y){store.write(store.read().map(o=>o.id===id&&o.owner===me?{...o,x,y}:o))},
+  async remove(id){store.write(store.read().filter(o=>o.id!==id||o.owner!==me))},
+  isMine:o=>o.owner===me
+};
+
+/* ============ 3. Kugel-Rendering (Formen, Glanz, Aufhänger) ============ */
+const $=(s,r=document)=>r.querySelector(s);
+const mk=()=>Object.assign(document.createElement('canvas'),{width:400,height:400});
+const star=(()=>{let d='';for(let i=0;i<10;i++){const r=i%2?78:165,a=-Math.PI/2+i*Math.PI/5;d+=(i?'L':'M')+(200+r*Math.cos(a)).toFixed(1)+' '+(222+r*Math.sin(a)).toFixed(1)}return d+'Z'})();
+const SHAPES={ // d = SVG-Pfad im 400x400-Raster, top = Position des Aufhängers
+  round:{d:'M50 215a150 150 0 1 0 300 0a150 150 0 1 0-300 0Z',top:65},
+  drop:{d:'M200 60C260 150 345 200 345 270A145 145 0 0 1 55 270C55 200 140 150 200 60Z',top:60},
+  star:{d:star,top:57},
+  heart:{d:'M200 360C60 260 50 130 130 100C170 85 195 110 200 130C205 110 230 85 270 100C350 130 340 260 200 360Z',top:124}
+};
+function ball(key,base,paint){
+  const o=mk(),c=o.getContext('2d'),{d,top}=SHAPES[key],p=new Path2D(d);
+  c.save();c.clip(p);c.drawImage(base,0,0);c.drawImage(paint,0,0);
+  const g=c.createRadialGradient(140,140,10,200,220,230);
+  g.addColorStop(0,'rgba(255,255,255,.55)');g.addColorStop(.25,'rgba(255,255,255,0)');g.addColorStop(.8,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.28)');
+  c.fillStyle=g;c.fillRect(0,0,400,400);c.restore();
+  c.lineWidth=5;c.strokeStyle='#1a2238';c.stroke(p);
+  c.fillStyle='#f4b942';c.fillRect(182,top-26,36,30);c.strokeRect(182,top-26,36,30);
+  c.beginPath();c.arc(200,top-34,12,Math.PI,0);c.stroke();
+  return o.toDataURL('image/webp',.85);
+}
+
+/* ============ 4. Demo-Kugeln (nur zur Ansicht, werden nicht gespeichert) ============ */
+const PALETTE=['#d6336c','#f4b942','#1f8f6a','#2f6fed','#7c3aed','#ff7a3d','#f6f8fc','#1a2238'];
+const SEED=[];
+
+/* ============ 5. Editor ============ */
+const ed={shape:'round',bg:PALETTE[0],photo:null,tool:'round',color:PALETTE[1],size:16};
+const base=$('#base'),paint=$('#paint'),mask=$('#mask');
+function drawBase(){
+  const c=base.getContext('2d');c.clearRect(0,0,400,400);c.save();c.clip(new Path2D(SHAPES[ed.shape].d));c.fillStyle=ed.bg;c.fillRect(0,0,400,400);
+  const i=ed.photo;if(i){const s=Math.max(400/i.width,400/i.height),w=i.width*s,h=i.height*s;c.drawImage(i,(400-w)/2,(400-h)/2,w,h)}
+  c.restore();
+}
+function drawMask(){
+  mask.getContext('2d').clearRect(0,0,400,400);
+}
+function trimPaintToShape(){
+  const c=paint.getContext('2d');
+  c.save();
+  c.globalCompositeOperation='destination-out';
+  c.fill(new Path2D(`M0 0H400V400H0Z ${SHAPES[ed.shape].d}`),'evenodd');
+  c.restore();
+}
+function swatches(el,key){PALETTE.forEach(col=>{const b=document.createElement('button');b.type='button';b.className='sw';b.style.background=col;b.setAttribute('aria-label',col);b.onclick=()=>pick(key,col);el.prepend(b)})}
+function pick(k,c){ed[k]=c;if(k==='bg'){ed.photo=null;drawBase()}}
+swatches($('#bgsw'),'bg');swatches($('#brsw'),'color');
+
+let last=null;
+const pt=e=>{const r=paint.getBoundingClientRect();return[(e.clientX-r.left)*400/r.width,(e.clientY-r.top)*400/r.height]};
+function dab(a,b){
+  const c=paint.getContext('2d');c.save();c.clip(new Path2D(SHAPES[ed.shape].d));
+  c.globalCompositeOperation=ed.tool==='erase'?'destination-out':'source-over';
+  if(ed.tool==='glitter'){
+    c.fillStyle=ed.color;
+    for(let i=0;i<3;i++){const x=b[0]+(Math.random()-.5)*ed.size*3,y=b[1]+(Math.random()-.5)*ed.size*3,r=2+Math.random()*ed.size/3;
+      c.beginPath();for(let k=0;k<8;k++){const t=k*Math.PI/4,q=k%2?r*.3:r;c.lineTo(x+q*Math.cos(t),y+q*Math.sin(t))}c.fill()}
+    c.restore();
+    return;
+  }
+  const felt=ed.tool==='felt';c.globalAlpha=felt?.3:1;c.strokeStyle=ed.color;c.lineWidth=ed.size*(felt?1.8:1);c.lineCap='round';
+  c.beginPath();c.moveTo(...a);c.lineTo(...b);c.stroke();c.globalAlpha=1;
+  c.restore();
+}
+paint.onpointerdown=e=>{paint.setPointerCapture(e.pointerId);last=pt(e);dab(last,last)};
+paint.onpointermove=e=>{if(last){const p=pt(e);dab(last,p);last=p}};
+paint.onpointerup=paint.onpointercancel=()=>{last=null};
+
+$('#ed').addEventListener('input',e=>{
+  const t=e.target;
+  if(t.name==='shape'){ed.shape=t.value;drawBase();trimPaintToShape();drawMask()}
+  else if(t.name==='tool')ed.tool=t.value;
+  else if(t.name==='size')ed.size=+t.value;
+  else if(t.id==='bgc')pick('bg',t.value);
+  else if(t.id==='brc')pick('color',t.value);
+});
+$('#photo').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const i=new Image();i.onload=()=>{ed.photo=i;drawBase();URL.revokeObjectURL(i.src)};i.src=URL.createObjectURL(f);e.target.value='';
+};
+$('#clear').onclick=()=>{paint.getContext('2d').clearRect(0,0,400,400);ed.photo=null;drawBase()};
+$('#cancelEd').onclick=()=>$('#editor').close();
+$('#open').onclick=()=>{ed.photo=null;drawBase();paint.getContext('2d').clearRect(0,0,400,400);drawMask();$('#msg').textContent='';$('#editor').showModal()};
+$('#done').onclick=()=>{
+  const name=$('#nm').value.trim(),company=$('#co').value.trim();
+  if(!name&&!company){$('#msg').textContent='Bitte trage einen Namen oder eine Firma ein.';$('#nm').focus();return}
+  const o={name,company,shape:ed.shape,image:ball(ed.shape,base,paint)};
+  $('#editor').close();startPlacing(o);
+};
+
+/* ============ 6. Baum, Platzieren (Drag & Drop), Detailansicht ============ */
+let list=[],key='',first=true,placing=null,pos={x:.5,y:.5};
+const clamp=v=>Math.min(1,Math.max(0,v));
+/* Hängebereich: Maske aus der Transparenz des Baumbilds (gleiche Einpassung wie object-fit: contain) */
+const AW=120,AH=160;let valid=null,cells=[];
+function showArea(){
+  const x=$('#area').getContext('2d');x.clearRect(0,0,AW,AH);if(!ASSETS.showHangArea)return;
+  x.fillStyle='#ff2bd6';const h=ASSETS.hangArea;
+  if(h&&typeof h==='object')x.fillRect(h.x0*AW,h.y0*AH,(h.x1-h.x0)*AW,(h.y1-h.y0)*AH);
+  else for(let k=0;k<cells.length;k+=2)x.fillRect(cells[k],cells[k+1],1,1);
+}
+function buildArea(img){
+  valid=null;cells=[];
+  if(ASSETS.hangArea!=='auto'){showArea();return}
+  try{
+    const c=Object.assign(document.createElement('canvas'),{width:AW,height:AH}),x=c.getContext('2d',{willReadFrequently:true});
+    const s=Math.min(AW/img.naturalWidth,AH/img.naturalHeight),w=img.naturalWidth*s,hh=img.naturalHeight*s;
+    x.drawImage(img,(AW-w)/2,(AH-hh)/2,w,hh);
+    const a=x.getImageData(0,0,AW,AH).data,m=ASSETS.hangInset??3,
+      op=(i,j)=>i>=0&&j>=0&&i<AW&&j<AH&&a[(j*AW+i)*4+3]>(ASSETS.alphaMin??40);
+    valid=new Uint8Array(AW*AH);
+    for(let j=0;j<AH;j++)for(let i=0;i<AW;i++)if(op(i,j)&&op(i-m,j)&&op(i+m,j)&&op(i,j-m)&&op(i,j+m)){valid[j*AW+i]=1;cells.push(i,j)}
+    if(!cells.length)valid=null;
+  }catch(e){console.warn('Baum-Maske nicht lesbar, Bereich frei',e);valid=null}
+  showArea();
+}
+function snap(x,y){
+  const h=ASSETS.hangArea;
+  if(h&&typeof h==='object')return{x:Math.min(h.x1,Math.max(h.x0,x)),y:Math.min(h.y1,Math.max(h.y0,y))};
+  if(!valid)return{x,y};
+  const i=Math.min(AW-1,Math.floor(x*AW)),j=Math.min(AH-1,Math.floor(y*AH));
+  if(valid[j*AW+i])return{x,y};
+  let b=1e9,bx=i,by=j;
+  for(let k=0;k<cells.length;k+=2){const d=(cells[k]-i)**2+(cells[k+1]-j)**2;if(d<b){b=d;bx=cells[k];by=cells[k+1]}}
+  return{x:(bx+.5)/AW,y:(by+.5)/AH};
+}
+function el(o,cls){
+  const b=document.createElement('button');b.type='button';b.className=cls;b.dataset.label=o.name||o.company;
+  b.setAttribute('aria-label','Kugel von '+(o.name||o.company));
+  const i=new Image();i.src=o.image;i.alt='';b.append(i);return b;
+}
+function place(b){b.style.left=pos.x*100+'%';b.style.top=pos.y*100+'%'}
+function draft(){
+  const b=el(placing,'orn placing');place(b);
+  b.onpointerdown=e=>{b.setPointerCapture(e.pointerId);b.drag=true};
+  b.onpointermove=e=>{if(!b.drag)return;const r=$('#stage').getBoundingClientRect();pos=snap(clamp((e.clientX-r.left)/r.width),clamp((e.clientY-r.top)/r.height));place(b)};
+  b.onpointerup=b.onpointercancel=()=>{b.drag=false};
+  return b;
+}
+function render(){
+  const box=$('#orns');box.replaceChildren();
+  list.forEach((o,i)=>{
+    if(placing&&o.id===placing.id)return;
+    const b=el(o,'orn'+(first?' new':''));b.style.left=o.x*100+'%';b.style.top=o.y*100+'%';
+    if(first)b.style.animationDelay=Math.min(i*40,800)+'ms';
+    b.onclick=()=>openDetail(o);box.append(b);
+  });
+  first=false;if(placing)box.append(draft());
+}
+async function refresh(){
+  const l=await api.list(),k=l.map(o=>o.id+o.x+o.y).join();
+  if(k===key)return;key=k;list=l;render();
+}
+function mode(p){$('#bar').hidden=p;$('#placebar').hidden=!p}
+function startPlacing(o){placing=o;pos=snap(o.x??.5,o.y??.5);mode(true);render()}
+$('#place').onclick=async()=>{
+  const o=placing;placing=null;
+  if(o.id)await api.move(o.id,pos.x,pos.y);else await api.create({...o,x:pos.x,y:pos.y});
+  mode(false);key='';refresh();
+};
+$('#cancel').onclick=()=>{placing=null;mode(false);render()};
+
+function openDetail(o){
+  $('#dimg').src=o.image;$('#dname').textContent=o.name||o.company;$('#dco').textContent=o.name?o.company:'';
+  const mine=api.isMine(o);
+  $('#move').hidden=!mine;$('#delete').hidden=!mine;
+  $('#move').onclick=()=>{$('#detail').close();startPlacing(o)};
+  $('#delete').onclick=async()=>{
+    if(!confirm('Möchtest du diese Kugel wirklich löschen?'))return;
+    await api.remove(o.id);$('#detail').close();key='__refresh__';await refresh();
+  };
+  $('#detail').showModal();
+}
+$('#close').onclick=()=>$('#detail').close();
+$('#detail').onclick=e=>{if(e.target.id==='detail')e.target.close()};
+
+/* ============ 7. Schneefall ============ */
+const snow=$('#snow'),snowCtx=snow.getContext('2d'),flakes=[];
+let snowWidth=0,snowHeight=0;
+function resizeSnow(){
+  snowWidth=innerWidth;snowHeight=innerHeight;
+  const dpr=Math.min(devicePixelRatio||1,2);
+  snow.width=snowWidth*dpr;snow.height=snowHeight*dpr;
+  snowCtx.setTransform(dpr,0,0,dpr,0,0);
+  if(!flakes.length)for(let i=0;i<55;i++)flakes.push({
+    x:Math.random()*snowWidth,y:Math.random()*snowHeight,
+    r:1.5+Math.random()*3,speed:.25+Math.random()*.55,
+    drift:(Math.random()-.5)*.18,opacity:.18+Math.random()*.32
+  });
+}
+function drawSnow(){
+  snowCtx.clearRect(0,0,snowWidth,snowHeight);
+  snowCtx.fillStyle='#fff';
+  for(const flake of flakes){
+    snowCtx.globalAlpha=flake.opacity;
+    snowCtx.beginPath();snowCtx.arc(flake.x,flake.y,flake.r,0,Math.PI*2);snowCtx.fill();
+    flake.y+=flake.speed;flake.x+=flake.drift;
+    if(flake.y>snowHeight+flake.r){flake.y=-flake.r;flake.x=Math.random()*snowWidth}
+    if(flake.x<-flake.r)flake.x=snowWidth+flake.r;
+    if(flake.x>snowWidth+flake.r)flake.x=-flake.r;
+  }
+  snowCtx.globalAlpha=1;
+  requestAnimationFrame(drawSnow);
+}
+addEventListener('resize',resizeSnow);
+resizeSnow();drawSnow();
+
+/* ============ Start ============ */
+$('#tree').onload=()=>buildArea($('#tree'));
+$('#tree').src=ASSETS.tree;
+refresh();
+addEventListener('storage',()=>refresh());               // Mock: andere Tabs im selben Browser
+setInterval(()=>{if(!placing)refresh()},15000);          // später: Polling gegen das Backend
+</script>
+</body>
+</html>
