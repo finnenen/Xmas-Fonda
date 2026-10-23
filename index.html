@@ -43,14 +43,14 @@ height:100svh;overflow:hidden}
 @keyframes pop{from{scale:0}}
 .orn.placing{width:7.5%;z-index:9;cursor:grab;touch-action:none;outline:3px dashed var(--gold);outline-offset:4px;border-radius:50%}
 .orn.placing::after{display:none}
-.bar{position:fixed;inset:auto 0 0 0;z-index:10;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#0e1b33e6);font-weight:800}
+.bar{position:fixed;inset:auto 0 0 0;z-index:10;display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,#0e1b3366);font-weight:800}
 .btn{font:inherit;font-weight:800;border:3px solid var(--ink);border-radius:16px;padding:.65em 1.2em;background:var(--gold) var(--asset-btn) center/100% 100%;color:#1a2238;box-shadow:4px 4px 0 var(--ink);cursor:pointer}
 .btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
 .btn.alt{background-color:var(--panel)}
 .btn.go{background-color:var(--berry);color:#fff}
-#open{width:280px;min-width:280px;aspect-ratio:1.92;padding:0;border:0;border-radius:0;background:url("button kugel gestalten.PNG") center/contain no-repeat;box-shadow:none;color:transparent;font-size:0;flex:0 0 auto}
-#open:hover{transform:translateY(-2px)}
-#open:active{transform:translateY(1px);box-shadow:none}
+#open{width:364px;min-width:364px;aspect-ratio:1.92;padding:0;border:0;border-radius:0;background:url("button kugel gestalten.PNG") center/contain no-repeat;box-shadow:none;color:transparent;font-size:0;flex:0 0 auto;transform:translate(calc(var(--button-pan-x,0px)),calc(20px + var(--button-zoom-y,0px) + var(--button-pan-y,0px))) scale(var(--button-zoom,1));transform-origin:center;transition:transform 1.8s cubic-bezier(.16,1,.3,1);will-change:transform}
+#open:hover{transform:translate(calc(var(--button-pan-x,0px)),calc(18px + var(--button-zoom-y,0px) + var(--button-pan-y,0px))) scale(calc(var(--button-zoom,1) * 1.12))}
+#open:active{transform:translate(calc(2px + var(--button-pan-x,0px)),calc(22px + var(--button-zoom-y,0px) + var(--button-pan-y,0px))) scale(var(--button-zoom,1));box-shadow:none}
 dialog{width:100%;max-width:min(980px,96vw);max-height:94svh;overflow:auto;padding:0;border:3px solid var(--ink);border-radius:24px;background:var(--panel) var(--asset-station) center/cover;color:var(--ink);box-shadow:8px 8px 0 var(--ink);font-family:Nunito,system-ui,sans-serif}
 dialog#editor{inset:0;width:100vw;max-width:none;height:100svh;max-height:none;margin:0;border:0;border-radius:0}
 dialog#detail{inset:0;width:100vw;max-width:none;height:100svh;max-height:none;margin:0;border:0;border-radius:0}
@@ -72,6 +72,11 @@ h2{margin:0;font:1.6rem "Bagel Fat One",system-ui,sans-serif;color:var(--berry)}
 .brush-stand{display:block;width:min(100%,480px);height:auto;margin:58px auto 0}
 @media(max-width:759px){.brush-stand{display:none}}
 @media(min-width:1000px){.brush-side{display:block}}
+.menu-panel{position:relative;z-index:0}
+.menu-underlay{position:fixed;z-index:0;top:-30px;left:var(--menu-underlay-left,0px);width:auto;height:calc(100svh + 60px);display:block;object-fit:contain;pointer-events:none}
+.menu-panel>*:not(.menu-underlay){position:relative;z-index:1}
+#edt{position:relative;z-index:2}
+@media(max-width:759px){.menu-underlay{display:none}}
 #base{filter:drop-shadow(0 8px 7px #0008)}
 #paint{touch-action:none;cursor:crosshair}
 #mask{pointer-events:none}
@@ -113,7 +118,7 @@ input[type=text]{width:100%;font:inherit;padding:.5em .7em;border:3px solid var(
 <dialog id="editor" aria-labelledby="edt"><div class="ed" id="ed">
   <h2 id="edt">Gestalte deine Kugel</h2>
   <div class="artwork"><div class="cv"><img class="underlay" src="untersatz.png?v=2" alt="" aria-hidden="true"><canvas id="base" width="400" height="400"></canvas><canvas id="paint" width="400" height="400"></canvas><canvas id="mask" width="400" height="400"></canvas><img class="brush-side" src="pinsel rechts.png" alt="" aria-hidden="true"></div><img class="brush-stand" src="Pinsel unten.png" alt="" aria-hidden="true"></div>
-  <div>
+  <div class="menu-panel"><img class="menu-underlay" src="menu untersatz.png" alt="" aria-hidden="true">
     <fieldset><legend>Form</legend><div class="row">
       <label class="chip"><input type="radio" name="shape" value="round" checked><span>Kugel</span></label>
       <label class="chip"><input type="radio" name="shape" value="drop"><span>Tropfen</span></label>
@@ -210,6 +215,11 @@ const SEED=[];
 /* ============ 5. Editor ============ */
 const ed={shape:'round',bg:PALETTE[0],photo:null,tool:'round',color:PALETTE[1],size:16};
 const base=$('#base'),paint=$('#paint'),mask=$('#mask');
+function positionMenuUnderlay(){
+  const panel=$('.menu-panel'),underlay=$('.menu-underlay');
+  if(!panel||!underlay)return;
+  document.documentElement.style.setProperty('--menu-underlay-left',`${panel.getBoundingClientRect().left-65}px`);
+}
 function drawBase(){
   const c=base.getContext('2d');c.clearRect(0,0,400,400);c.save();c.clip(new Path2D(SHAPES[ed.shape].d));c.fillStyle=ed.bg;c.fillRect(0,0,400,400);
   const i=ed.photo;if(i){const s=Math.max(400/i.width,400/i.height),w=i.width*s,h=i.height*s;c.drawImage(i,(400-w)/2,(400-h)/2,w,h)}
@@ -263,7 +273,7 @@ $('#photo').onchange=e=>{
 };
 $('#clear').onclick=()=>{paint.getContext('2d').clearRect(0,0,400,400);ed.photo=null;drawBase()};
 $('#cancelEd').onclick=()=>$('#editor').close();
-$('#open').onclick=()=>{ed.photo=null;drawBase();paint.getContext('2d').clearRect(0,0,400,400);drawMask();$('#msg').textContent='';$('#editor').showModal()};
+$('#open').onclick=()=>{ed.photo=null;drawBase();paint.getContext('2d').clearRect(0,0,400,400);drawMask();$('#msg').textContent='';$('#editor').showModal();positionMenuUnderlay()};
 $('#done').onclick=()=>{
   const name=$('#nm').value.trim(),company=$('#co').value.trim();
   if(!name&&!company){$('#msg').textContent='Bitte trage einen Namen oder eine Firma ein.';$('#nm').focus();return}
@@ -387,6 +397,7 @@ function drawSnow(){
 }
 addEventListener('resize',resizeSnow);
 resizeSnow();drawSnow();
+addEventListener('resize',positionMenuUnderlay);
 
 /* ============ 8. Desktop-Zoom mit Parallax-Fokus ============ */
 const zoomRoot=document.documentElement;
@@ -405,6 +416,10 @@ function renderZoom(){
   set('--mid-pan-y',(centerY-pointerY)*progress*.5);
   set('--bg-pan-x',(centerX-pointerX)*progress*.2);
   set('--bg-pan-y',(centerY-pointerY)*progress*.2);
+  zoomRoot.style.setProperty('--button-zoom',1+progress*1.3);
+  set('--button-zoom-y',progress*innerHeight*1.1);
+  set('--button-pan-x',(centerX-pointerX)*progress*1.3);
+  set('--button-pan-y',(centerY-pointerY)*progress*1.3);
 }
 function zoomEnabled(){return desktopZoom.matches}
 addEventListener('pointermove',e=>{
